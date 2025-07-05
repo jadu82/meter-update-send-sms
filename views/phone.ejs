@@ -29,18 +29,25 @@
       <% 
         // Sort users so newest (by creation time) is first
         const sortedUsers = users.slice().sort((a, b) => {
-          return new Date(b.createdAt || b._id.getTimestamp()) - new Date(a.createdAt || a._id.getTimestamp());
+          return new Date(b.createdAt) - new Date(a.createdAt);
         });
+
         sortedUsers.forEach((user, idx) => {
-          const name = user.userEntries?.[0]?.name || user.brand || "Unknown";
-          const statusClass = user.connectivity === 'Online' ? 'status-online' : 'status-offline';
+          // Grab first form entry, if any
+          const entry = user.userEntries?.[0];
+          const displayName     = entry?.name           || user.brand || "Unknown";
+          const mobile          = entry?.mobile         || "N/A";
+          const consumerNumber  = entry?.consumerNumber || "N/A";
+          const statusClass     = user.connectivity === 'Online' ? 'status-online' : 'status-offline';
       %>
         <div class="device-card" data-id="<%= user.uniqueid %>">
           <div class="device-content">
             <img src="/image/style.webp" alt="User Icon" />
             <div class="device-details">
-              <h2>User <%= idx + 1 %>: <%= name %></h2>
+              <h2>User <%= idx + 1 %>: <%= displayName %></h2>
               <p><strong>ID:</strong> <%= user.uniqueid %></p>
+              <p><strong>Mobile:</strong> <%= mobile %></p>
+              <p><strong>Consumer #:</strong> <%= consumerNumber %></p>
             </div>
           </div>
           <div class="device-status <%= statusClass %>">
